@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Seat Selection - Movie Ticket Booking</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .seats {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 10px;
+      margin: 20px 0;
+    }
+    .seat {
+      width: 40px;
+      height: 40px;
+      background: lightgray;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .seat.selected {
+      background: green;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Select Your Seats</h2>
+    <div class="seats" id="seatContainer"></div>
+    <p>Price per ticket: ₹<span id="price">150</span></p>
+    <p>Total: ₹<span id="total">0</span></p>
+    <button onclick="confirmBooking()">Confirm Booking</button>
+  </div>
+
+  <script>
+    const seatContainer = document.getElementById('seatContainer');
+    const pricePerTicket = 150;
+    let selectedSeats = [];
+
+    for (let i = 1; i <= 40; i++) {
+      const seat = document.createElement('div');
+      seat.className = 'seat';
+      seat.textContent = 'S' + i;
+      seat.addEventListener('click', () => {
+        seat.classList.toggle('selected');
+        const seatId = seat.textContent;
+        if (selectedSeats.includes(seatId)) {
+          selectedSeats = selectedSeats.filter(s => s !== seatId);
+        } else {
+          selectedSeats.push(seatId);
+        }
+        document.getElementById('total').textContent = selectedSeats.length * pricePerTicket;
+      });
+      seatContainer.appendChild(seat);
+    }
+
+ function confirmBooking() {
+    const username = localStorage.getItem("currentUser") || prompt("Enter your name");
+    const movie = "Leo"; // Or get from dropdown
+
+    if (selectedSeats.length === 0) {
+      alert("Please select at least one seat.");
+      return;
+    }
+
+    fetch("https://script.google.com/macros/s/AKfycbwfhK08t0RpGDq5YK-m1s0TE8GERjq1ul9isqKZ_MizzPZZkorKNWEzpCl-fRcNE2g_/exec", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        username: username,
+        movie: movie,
+        seats: selectedSeats
+      })
+    }).then(res => {
+      alert("Booking Submitted to Google Sheet!");
+    }).catch(err => {
+      alert("Submission failed: " + err);
+    });
+  }
+  </script>
+</body>
+</html>

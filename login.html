@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - Movie Ticket Booking</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h2>Login</h2>
+    <form id="loginForm">
+      <label for="username">Username:</label>
+      <input type="text" id="username" required>
+
+      <label for="password">Password:</label>
+      <input type="password" id="password" required>
+
+      <button type="submit">Login</button>
+      <p>Don't have an account? <a href="register.html">Register here</a></p>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const user = localStorage.getItem(document.getElementById('username').value);
+      if (user) {
+        const parsedUser = JSON.parse(user);
+        if (parsedUser.password === document.getElementById('password').value) {
+          alert('Login successful!');
+          window.location.href = 'index.html';
+        } else {
+          alert('Incorrect password');
+        }
+      } else {
+        alert('User not found');
+      }
+    });
+  </script>
+</body>
+</html>
